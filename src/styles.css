@@ -1,0 +1,37 @@
+body {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+    background-color: #f0f0f0;
+}
+
+.gameboard-container {
+    text-align: center;
+}
+
+.gameboard {
+    display: grid;
+    grid-template-columns: repeat(10, 40px);
+    grid-template-rows: repeat(10, 40px);
+}
+
+.cell {
+    width: 40px;
+    height: 40px;
+    background-color: #fff;
+    border: 1px solid black;
+}
+
+.cell.ship {
+    background-color: #007bff;
+}
+
+.cell.hit {
+    background-color: #dc3545;
+}
+
+.cell.miss {
+    background-color: #6c757d;
+}

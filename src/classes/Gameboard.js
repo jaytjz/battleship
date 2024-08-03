@@ -1,3 +1,5 @@
+import { Ship } from "./Ship";
+
 export class Gameboard {
     constructor() {
         this.size = 10;
@@ -23,11 +25,23 @@ export class Gameboard {
                 return false;
             }
 
+            for (let i = 0; i < ship.length; i++) {
+                if (this.ships.some(({ coordinates }) => coordinates.some(([cx, cy]) => cx === x + i && cy === y))) {
+                    return false;
+                }
+            }
+
             return true;
         }
         else if(orientation === "vertical"){
             if(ship.length + y > this.size - 1){
                 return false;
+            }
+
+            for (let i = 0; i < ship.length; i++) {
+                if (this.ships.some(({ coordinates }) => coordinates.some(([cx, cy]) => cx === x && cy === y + i))) {
+                    return false;
+                }
             }
 
             return true;
@@ -60,10 +74,8 @@ export class Gameboard {
     }
 
     receiveAttack([x, y]){
-        for(let [sx, sy] of this.shotsTaken){
-            if (sx === x && sy === y) {
-                return false;
-            }
+        if (this.shotsTaken.some(([sx, sy]) => sx === x && sy === y)) {
+            return false;
         }
         this.shotsTaken.push([x, y]);
 
@@ -79,5 +91,42 @@ export class Gameboard {
 
     allShipsSunk(){
         return this.ships.every(shipObj => shipObj.ship.sunk);
+    }
+
+    populateBoard(){
+        const array = [new Ship(2), new Ship(3), new Ship(3), new Ship(4), new Ship(5)]
+
+        array.forEach((ship) => {
+            let placed = false;
+            while(!placed){
+                let randomX = Math.floor(Math.random() * 10);
+                let randomY = Math.floor(Math.random() * 10);
+                let randomOrientation = Math.random() < 0.5 ? "horizontal" : "vertical";   
+                
+                if (this.isValidPlacement(ship, randomX, randomY, randomOrientation)) {
+                    this.placeShips(ship, randomX, randomY, randomOrientation);
+                    placed = true;
+                }
+            }
+        })
+
+    }
+
+    render(boardElement, showShips = false) {
+        const size = this.size;
+
+        for (let y = 0; y < size; y++) {
+            for (let x = 0; x < size; x++) {
+                const cell = document.createElement('div');
+                cell.classList.add('cell');
+                cell.dataset.x = x;
+                cell.dataset.y = y;
+
+                if (showShips && this.ships.some(({ coordinates }) => coordinates.some(([cx, cy]) => cx === x && cy === y))) {
+                    cell.classList.add('ship');
+                }
+                boardElement.appendChild(cell);
+            }
+        }
     }
 }
