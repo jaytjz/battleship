@@ -1,4 +1,4 @@
-import { Ship } from "../src/ship";
+import { Ship } from "../src/classes/Ship";
 
 test("hit function", () => {
   let ship1 = new Ship(1);
